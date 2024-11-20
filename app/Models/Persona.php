@@ -3,8 +3,26 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Persona extends Model
 {
-    //
+    use HasFactory;
+
+    protected $fillable = ['razon_social','direccion','tipo_persona','documento_id','numero_documento'];
+
+    public function documento()
+    {
+        return $this->belongsTo(Documento::class);
+    }
+
+    public function proveedore()
+    {
+        return $this->hasOne(Proveedore::class);
+    }
+
+    public function cliente()
+    {
+        return $this->hasOne(Cliente::class);
+    }
 }
