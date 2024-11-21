@@ -15,7 +15,8 @@ class CategoriaController extends Controller
      */
     public function index()
     {
-        return view('categoria.index');
+        $categorias = Categoria::with('caracteristica')->latest()->get();
+        return view('categoria.index', compact('categorias'));
     }
 
     /**
@@ -60,17 +61,27 @@ class CategoriaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Categoria $categoria)
     {
-        //
+        return view('categoria.edit', compact('categoria'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Categoria $categoria)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|string|max:60|unique:caracteristicas,nombre,' . $categoria->caracteristica_id,
+        ]);
+
+        //Actualizar la característica asociada
+        $categoria->caracteristica->update([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion ?? null,
+        ]);
+
+        return redirect()->route('categorias.index')->with('success', 'Categoría y característica actualizadas exitosamente.');
     }
 
     /**
@@ -78,6 +89,17 @@ class CategoriaController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $message = '';
+        $categoria = Categoria::find($id);
+        if($categoria->caracteristica->estado == 1) {
+            Caracteristica::where('id', $categoria->caracteristica->id)->update(['estado' => 0]);
+            $message = 'Categoría eliminada';
+        }
+        else {
+            Caracteristica::where('id', $categoria->caracteristica->id)->update(['estado' => 1]);
+            $message = 'Categoría restaurada';
+        }
+        
+        return redirect()->route('categorias.index')->with('success', $message);
     }
 }
