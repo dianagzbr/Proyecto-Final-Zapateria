@@ -9,7 +9,7 @@ class Producto extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['codigo', 'nombre', 'descripcion', 'fecha_vencimiento', 'marca_id', 'img_path'];
+    protected $fillable = ['codigo', 'nombre', 'descripcion', 'marca_id', 'img_path'];
 
     public function compras()
     {

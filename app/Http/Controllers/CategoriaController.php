@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Caracteristica; 
+use App\Models\Categoria; 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Exception;
 
 class CategoriaController extends Controller
 {
@@ -19,7 +23,7 @@ class CategoriaController extends Controller
      */
     public function create()
     {
-        //
+        return view('categoria.create');
     }
 
     /**
@@ -27,7 +31,22 @@ class CategoriaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|string|max:60', // Evitar nombres duplicados
+        ]);
+
+        // Crear la característica asociada
+        $caracteristica = Caracteristica::create([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion ?? null,
+        ]);
+
+        // Crear la categoría asociada
+        Categoria::create([
+            'caracteristica_id' => $caracteristica->id,
+        ]);
+
+        return redirect()->route('categorias.index')->with('success', 'Categoría y característica creadas exitosamente.');
     }
 
     /**
