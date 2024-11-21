@@ -3,20 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Caracteristica; 
-use App\Models\Categoria; 
-use Illuminate\Support\Facades\DB;
+use App\Models\Marca; 
 use Illuminate\Http\Request;
-use Exception;
 
-class CategoriaController extends Controller
+class MarcaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $categorias = Categoria::with('caracteristica')->latest()->get();
-        return view('categoria.index', compact('categorias'));
+        $marcas = Marca::with('caracteristica')->latest()->get();
+        return view('marca.index', compact('marcas'));
     }
 
     /**
@@ -24,7 +22,7 @@ class CategoriaController extends Controller
      */
     public function create()
     {
-        return view('categoria.create');
+        return view('marca.create');
     }
 
     /**
@@ -42,12 +40,12 @@ class CategoriaController extends Controller
             'descripcion' => $request->descripcion ?? null,
         ]);
 
-        // Crear la categoría asociada
-        Categoria::create([
+        // Crear la marca asociada
+        Marca::create([
             'caracteristica_id' => $caracteristica->id,
         ]);
 
-        return redirect()->route('categorias.index')->with('success', 'Categoría creada exitosamente.');
+        return redirect()->route('marcas.index')->with('success', 'Marca creada exitosamente.');
     }
 
     /**
@@ -61,27 +59,27 @@ class CategoriaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Categoria $categoria)
+    public function edit(Marca $marca)
     {
-        return view('categoria.edit', compact('categoria'));
+        return view('marca.edit', compact('marca'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Categoria $categoria)
+    public function update(Request $request, Marca $marca)
     {
         $request->validate([
-            'nombre' => 'required|string|max:60|unique:caracteristicas,nombre,' . $categoria->caracteristica_id,
+            'nombre' => 'required|string|max:60|unique:caracteristicas,nombre,' . $marca->caracteristica_id,
         ]);
 
         //Actualizar la característica asociada
-        $categoria->caracteristica->update([
+        $marca->caracteristica->update([
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion ?? null,
         ]);
 
-        return redirect()->route('categorias.index')->with('success', 'Categoría actualizada exitosamente.');
+        return redirect()->route('marcas.index')->with('success', 'Marca actualizada exitosamente.');
     }
 
     /**
@@ -90,16 +88,16 @@ class CategoriaController extends Controller
     public function destroy(string $id)
     {
         $message = '';
-        $categoria = Categoria::find($id);
-        if($categoria->caracteristica->estado == 1) {
-            Caracteristica::where('id', $categoria->caracteristica->id)->update(['estado' => 0]);
-            $message = 'Categoría eliminada';
+        $marca = Marca::find($id);
+        if($marca->caracteristica->estado == 1) {
+            Caracteristica::where('id', $marca->caracteristica->id)->update(['estado' => 0]);
+            $message = 'Marca eliminada';
         }
         else {
-            Caracteristica::where('id', $categoria->caracteristica->id)->update(['estado' => 1]);
-            $message = 'Categoría restaurada';
+            Caracteristica::where('id', $marca->caracteristica->id)->update(['estado' => 1]);
+            $message = 'Marca restaurada';
         }
         
-        return redirect()->route('categorias.index')->with('success', $message);
+        return redirect()->route('marcas.index')->with('success', $message);
     }
 }

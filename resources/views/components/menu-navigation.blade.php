@@ -52,8 +52,12 @@
                             </div> -->
                             <div class="sb-sidenav-menu-heading">Secciones</div>
                             <a class="nav-link" href="{{ route('categorias.index') }}">
-                                <div class="sb-nav-link-icon"><i class="fa-solid fa-tag"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-list"></i></div>
                                 Categorías
+                            </a>
+                            <a class="nav-link" href="{{ route('marcas.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-tag"></i></div>
+                                Marcas
                             </a>
                             <a class="nav-link" href="tables.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
