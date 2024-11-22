@@ -67,6 +67,10 @@
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>
                                 Tallas
                             </a>
+                            <a class="nav-link" href="{{ route('clientes.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-users-rectangle"></i></div>
+                                Clientes
+                            </a>
                             <a class="nav-link" href="tables.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Tables
