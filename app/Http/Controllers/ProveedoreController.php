@@ -2,21 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cliente;
 use App\Models\Documento;
 use App\Models\Persona;
-use GuzzleHttp\Client;
+use App\Models\Proveedore;
 use Illuminate\Http\Request;
 
-class ClienteController extends Controller
+class ProveedoreController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $clientes = Cliente::with('persona.documento')->get();
-        return view('cliente.index', compact('clientes'));
+        $proveedores = Proveedore::with('persona.documento')->get();
+        return view('proveedore.index', compact('proveedores'));
     }
 
     /**
@@ -25,7 +24,7 @@ class ClienteController extends Controller
     public function create()
     {
         $documentos = Documento::all();
-        return view('cliente.create', compact('documentos'));
+        return view('proveedore.create', compact('documentos'));
     }
 
     /**
@@ -51,12 +50,12 @@ class ClienteController extends Controller
                 'numero_documento' => $request->numero_documento,
             ]);
 
-            //Crear el cliente asociado a la persona
-            Cliente::create(['persona_id' => $persona->id]);
+            //Crear el proveedor asociado a la persona
+            Proveedore::create(['persona_id' => $persona->id]);
 
-            return redirect()->route('clientes.index')->with('success', 'Cliente creado exitosamente.');
+            return redirect()->route('proveedores.index')->with('success', 'Proveedor creado exitosamente.');
         } catch (\Exception $e) {
-            return redirect()->route('clientes.index')->with('error', 'Error al crear el cliente.');
+            return redirect()->route('proveedores.index')->with('error', 'Error al crear el proveedor.');
         }
     }
 
@@ -71,29 +70,28 @@ class ClienteController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Cliente $cliente)
+    public function edit(Proveedore $proveedore)
     {
-        $cliente->load('persona.documento');
+        $proveedore->load('persona.documento');
         $documentos = Documento::all();
-        return view('cliente.edit', compact('cliente', 'documentos'));
+        return view('proveedore.edit', compact('proveedore', 'documentos'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cliente $cliente)
+    public function update(Request $request, Proveedore $proveedore)
     {
-
         $request->validate([
             'razon_social' => 'required|string|max:80',
             'direccion' => 'required|string|max:80',
             'documento_id' => 'required|exists:documentos,id',
-            'numero_documento' => 'required|string|max:50|unique:personas,numero_documento,' . $cliente->persona->id,
+            'numero_documento' => 'required|string|max:50|unique:personas,numero_documento,' . $proveedore->persona->id,
         ]);
     
         try {
-            //Cargar la persona relacionada con el cliente
-            $persona = $cliente->persona;
+            //Cargar la persona relacionada con el proveedor
+            $persona = $proveedore->persona;
     
             //Verificar si la relación está cargada correctamente
             if (!$persona) {
@@ -108,33 +106,33 @@ class ClienteController extends Controller
                 'numero_documento' => $request->numero_documento,
             ]);
     
-            return redirect()->route('clientes.index')->with('success', 'Cliente actualizado exitosamente.');
+            return redirect()->route('proveedores.index')->with('success', 'Proveedor actualizado exitosamente.');
         } catch (\Exception $e) {
-            return redirect()->route('clientes.index')->with('error', 'Error al actualizar el cliente: ' . $e->getMessage());
+            return redirect()->route('proveedores.index')->with('error', 'Error al actualizar el proveedor: ' . $e->getMessage());
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Cliente $cliente)
+    public function destroy(Proveedore $proveedore)
     {
         try {
             //Obtener la persona asociada
-            $persona = $cliente->persona;
+            $persona = $proveedore->persona;
     
-            //Eliminar el cliente
-            $cliente->delete();
+            //Eliminar el proveedor
+            $proveedore->delete();
     
             //Eliminar la persona asociada
             if ($persona) {
                 $persona->delete();
             }
     
-            return redirect()->route('clientes.index')->with('success', 'Cliente eliminado exitosamente.');
+            return redirect()->route('proveedores.index')->with('success', 'Proveedor eliminado exitosamente.');
         } catch (\Exception $e) {
     
-            return redirect()->route('clientes.index')->with('error', 'Error al eliminar el cliente.');
+            return redirect()->route('proveedores.index')->with('error', 'Error al eliminar el proveedor.');
         }
     }
 }

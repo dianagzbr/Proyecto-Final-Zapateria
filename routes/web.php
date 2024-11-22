@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\ProveedoreController;
 use App\Http\Controllers\TallaController;
 
 Route::get('/', function () {
@@ -19,6 +20,7 @@ Route::resources([
     'productos' => ProductoController::class,
     'tallas' => TallaController::class,
     'clientes' => ClienteController::class,
+    'proveedores' => ProveedoreController::class,
 ]);
 
 Route::get('/login', function () {
