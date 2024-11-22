@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('img_path',255)->nullable();
             $table->tinyInteger('estado')->default(1);
             $table->foreignId('marca_id')->constrained('marcas')->onDelete('cascade');
+            $table->foreignId('categoria_id')->constrained('categorias')->onDelete('cascade');
             $table->timestamps();
         });
     }

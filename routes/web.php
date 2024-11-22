@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\TallaController;
 
 Route::get('/', function () {
     return view('template');
@@ -15,6 +16,7 @@ Route::resources([
     'categorias' => CategoriaController::class,
     'marcas' => MarcaController::class,
     'productos' => ProductoController::class,
+    'tallas' => TallaController::class,
 ]);
 
 Route::get('/login', function () {

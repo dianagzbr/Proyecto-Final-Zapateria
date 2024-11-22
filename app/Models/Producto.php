@@ -9,7 +9,7 @@ class Producto extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['codigo', 'nombre', 'descripcion', 'marca_id', 'img_path'];
+    protected $fillable = ['codigo', 'nombre', 'descripcion', 'marca_id', 'categoria_id', 'img_path'];
 
     public function compras()
     {
@@ -21,13 +21,18 @@ class Producto extends Model
         return $this->belongsToMany(Venta::class)->withTimestamps()->withPivot('cantidad', 'precio_venta', 'descuento');
     }
 
-    public function categorias()
+    public function categoria()
     {
-        return $this->belongsToMany(Categoria::class)->withTimestamps();
+        return $this->belongsTo(Categoria::class);
     }
 
     public function marca()
     {
         return $this->belongsTo(Marca::class);
+    }
+
+    public function tallas()
+    {
+        return $this->belongsToMany(Talla::class, 'producto_talla')->withPivot('cantidad')->withTimestamps();
     }
 }
