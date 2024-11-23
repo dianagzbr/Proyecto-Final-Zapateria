@@ -8,6 +8,7 @@ use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProveedoreController;
 use App\Http\Controllers\TallaController;
+use App\Http\Controllers\VentaController;
 
 Route::get('/', function () {
     return view('template');
@@ -23,6 +24,7 @@ Route::resources([
     'clientes' => ClienteController::class,
     'proveedores' => ProveedoreController::class,
     'compras' => CompraController::class,
+    'ventas' => VentaController::class,
 ]);
 
 Route::get('/login', function () {
