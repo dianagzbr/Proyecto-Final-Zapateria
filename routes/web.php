@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ClienteController;
@@ -14,29 +15,19 @@ Route::get('/', function () {
     return view('template');
 });
 
-Route::view('/panel', 'panel.index')->name('panel');
+Route::middleware(['auth'])->group(function () {
+    Route::view('/panel', 'panel.index')->name('panel');
 
-Route::resources([
-    'categorias' => CategoriaController::class,
-    'marcas' => MarcaController::class,
-    'productos' => ProductoController::class,
-    'tallas' => TallaController::class,
-    'clientes' => ClienteController::class,
-    'proveedores' => ProveedoreController::class,
-    'compras' => CompraController::class,
-    'ventas' => VentaController::class,
-]);
-
-Route::get('/login', function () {
-    return view('auth.login');
-});
-
-Route::get('/register', function () {
-    return view('auth.register');
-});
-
-Route::get('/password', function () {
-    return view('auth.password');
+    Route::resources([
+        'categorias' => CategoriaController::class,
+        'marcas' => MarcaController::class,
+        'productos' => ProductoController::class,
+        'tallas' => TallaController::class,
+        'clientes' => ClienteController::class,
+        'proveedores' => ProveedoreController::class,
+        'compras' => CompraController::class,
+        'ventas' => VentaController::class,
+    ]);
 });
 
 Route::get('/401', function () {

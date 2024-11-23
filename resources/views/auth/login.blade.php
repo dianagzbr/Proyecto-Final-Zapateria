@@ -1,48 +1,71 @@
-<x-guest-layout>
-    <x-authentication-card>
-        <x-slot name="logo">
-            <x-authentication-card-logo />
-        </x-slot>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Login</title>
+        <link href="{{ asset('css/template.css') }}" rel="stylesheet" />
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    </head>
+    <body style="background-color:#db2373">
+        <div id="layoutAuthentication">
+            <div id="layoutAuthentication_content">
+                <main>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-5">
+                                <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                    <div class="card-header">
+                                        <h3 class="text-center font-weight-light my-4">Login</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Formulario de Jetstream -->
+                                        <form method="POST" action="{{ route('login') }}">
+                                            @csrf
 
-        <x-validation-errors class="mb-4" />
+                                            <!-- Email -->
+                                            <div class="form-floating mb-3">
+                                                <input class="form-control" id="email" type="email" name="email" :value="old('email')" required autofocus placeholder="name@example.com" />
+                                                <label for="email">Email address</label>
+                                            </div>
 
-        @session('status')
-            <div class="mb-4 font-medium text-sm text-green-600 dark:text-green-400">
-                {{ $value }}
+                                            <!-- Password -->
+                                            <div class="form-floating mb-3">
+                                                <input class="form-control" id="password" type="password" name="password" required autocomplete="current-password" placeholder="Password" />
+                                                <label for="password">Password</label>
+                                            </div>
+
+                                            <!-- Remember me -->
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" id="remember_me" type="checkbox" name="remember" />
+                                                <label class="form-check-label" for="remember_me">Remember Password</label>
+                                            </div>
+
+                                            <!-- Botones -->
+                                            <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                                                @if (Route::has('password.request'))
+                                                    <a class="small" href="{{ route('password.request') }}">Forgot Password?</a>
+                                                @endif
+                                                <button class="btn" style="background-color:#db2373" type="submit">Login</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="card-footer text-center py-3">
+                                        <div class="small">
+                                            <a href="{{ route('register') }}">Need an account? Sign up!</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
             </div>
-        @endsession
-
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
-
-            <div>
-                <x-label for="email" value="{{ __('Email') }}" />
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            </div>
-
-            <div class="mt-4">
-                <x-label for="password" value="{{ __('Password') }}" />
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
-            </div>
-
-            <div class="block mt-4">
-                <label for="remember_me" class="flex items-center">
-                    <x-checkbox id="remember_me" name="remember" />
-                    <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
-                </label>
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                @if (Route::has('password.request'))
-                    <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}">
-                        {{ __('Forgot your password?') }}
-                    </a>
-                @endif
-
-                <x-button class="ms-4">
-                    {{ __('Log in') }}
-                </x-button>
-            </div>
-        </form>
-    </x-authentication-card>
-</x-guest-layout>
+            <x-footer/>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="{{ asset('js/scripts.js') }}"></script>
+    </body>
+</html>
