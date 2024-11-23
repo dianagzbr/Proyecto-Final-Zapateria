@@ -21,12 +21,12 @@ class VentaController extends Controller
      */
     public function index()
     {
-        $ventas = Venta::with(['comprobante','cliente.persona','user'])
-        //->whereNull('deleted_at')
-        ->latest()
-        ->get();
+        $ventas = Venta::with(['comprobante', 'cliente.persona', 'user'])
+            ->whereNull('deleted_at')
+            ->latest()
+            ->get();
 
-        return view('venta.index',compact('ventas'));
+        return view('venta.index', compact('ventas'));
     }
 
     /**
@@ -72,23 +72,23 @@ class VentaController extends Controller
             DB::beginTransaction();
 
             $fechaHora = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now()->toDateTimeString());
-    
+
             $ventaData = $request->validated();
             $ventaData['fecha_hora'] = $fechaHora;
-    
+
             //Crear la venta
             $venta = Venta::create($ventaData);
-    
+
             //Manejo de productos
             $arrayProducto_id = $request->get('arrayidproducto');
             $arrayCantidad = $request->get('arraycantidad');
             $arrayPrecioVenta = $request->get('arrayprecioventa');
             $arrayDescuento = $request->get('arraydescuento');
-    
+
             $sizeArray = count($arrayProducto_id);
             for ($cont = 0; $cont < $sizeArray; $cont++) {
                 //Log::info("Procesando producto ID: {$arrayProducto_id[$cont]}");
-    
+
                 $venta->productos()->syncWithoutDetaching([
                     $arrayProducto_id[$cont] => [
                         'cantidad' => $arrayCantidad[$cont],
@@ -96,22 +96,22 @@ class VentaController extends Controller
                         'descuento' => $arrayDescuento[$cont],
                     ]
                 ]);
-    
+
                 //Actualizar stock
                 $producto = Producto::find($arrayProducto_id[$cont]);
                 if (!$producto) {
                     throw new Exception("Producto no encontrado: ID {$arrayProducto_id[$cont]}");
                 }
-    
+
                 $producto->decrement('stock', $arrayCantidad[$cont]);
             }
-    
+
             DB::commit();
-    
+
             return redirect()->route('ventas.index')->with('success', 'Venta registrada exitosamente.');
         } catch (Exception $e) {
             DB::rollBack();
-    
+
             return redirect()->route('ventas.create')->with('error', 'Ocurrió un error al registrar la venta.');
         }
     }
@@ -121,7 +121,7 @@ class VentaController extends Controller
      */
     public function show(Venta $venta)
     {
-        return view('venta.show',compact('venta'));
+        return view('venta.show', compact('venta'));
     }
 
     /**
@@ -143,8 +143,13 @@ class VentaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Venta $venta)
     {
-        //
+        try {
+            $venta->delete();
+            return redirect()->route('ventas.index')->with('success', 'Venta eliminada exitosamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('ventas.index')->with('error', 'Error al eliminar la venta: ' . $e->getMessage());
+        }
     }
 }
