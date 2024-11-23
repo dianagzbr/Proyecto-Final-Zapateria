@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Cliente;
+use App\Models\Proveedore;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -21,7 +23,10 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         //$this->call(DocumentoSeeder::class);
-        $this->call(ComprobanteSeeder::class);
-        $this->call(UserSeeder::class);
+        // $this->call(ComprobanteSeeder::class);
+        // $this->call(UserSeeder::class);
+
+        Cliente::factory()->count(20)->create(); // 20 clientes
+        Proveedore::factory()->count(10)->create(); // 10 proveedores
     }
 }
