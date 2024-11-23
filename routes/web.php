@@ -50,3 +50,12 @@ Route::get('/404', function () {
 Route::get('/500', function () {
     return view('pages.500');
 });
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});

@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Cliente;
-use App\Models\Proveedore;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,18 +13,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // User::factory(10)->withPersonalTeam()->create();
 
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
-        //$this->call(DocumentoSeeder::class);
-        // $this->call(ComprobanteSeeder::class);
-        // $this->call(UserSeeder::class);
-
-        Cliente::factory()->count(20)->create(); // 20 clientes
-        Proveedore::factory()->count(10)->create(); // 10 proveedores
+        User::factory()->withPersonalTeam()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+        ]);
     }
 }
