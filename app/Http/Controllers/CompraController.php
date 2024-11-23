@@ -20,7 +20,9 @@ class CompraController extends Controller
      */
     public function index()
     {
-        return view('compra.index');
+        $compras = Compra::with('comprobante', 'proveedore.persona')->latest()
+        ->get();
+        return view('compra.index', compact('compras'));
     }
 
     /**
@@ -104,9 +106,9 @@ class CompraController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Compra $compra)
     {
-        //
+        return view('compra.show', compact('compra'));
     }
 
     /**

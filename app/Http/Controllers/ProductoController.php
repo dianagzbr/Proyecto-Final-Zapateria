@@ -171,24 +171,24 @@ class ProductoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Producto $producto)
+    public function destroy(string $id)
     {
-        try {
-            // Eliminar la imagen asociada si existe
-            if ($producto->img_path && file_exists(public_path($producto->img_path))) {
-                unlink(public_path($producto->img_path));
-            }
-    
-            // Eliminar las relaciones con tallas
-            $producto->tallas()->detach();
-    
-            // Eliminar el producto
-            $producto->delete();
-    
-            return redirect()->route('productos.index')->with('success', 'Producto eliminado exitosamente.');
-        } catch (\Exception $e) {
-            // Manejo de errores
-            return redirect()->route('productos.index')->with('error', 'Error al eliminar el producto.');
+        $message = '';
+        $producto = Producto::find($id);
+        if ($producto->estado == 1) {
+            Producto::where('id', $producto->id)
+                ->update([
+                    'estado' => 0
+                ]);
+            $message = 'Producto eliminado';
+        } else {
+            Producto::where('id', $producto->id)
+                ->update([
+                    'estado' => 1
+                ]);
+            $message = 'Producto restaurado';
         }
+
+        return redirect()->route('productos.index')->with('success', $message);
     }
 }
