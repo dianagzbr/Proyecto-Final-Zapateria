@@ -4,13 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Compra extends Model
 {
+    use SoftDeletes;
     use HasFactory;
 
     protected $fillable = ['fecha_hora', 'impuesto', 'numero_comprobante', 'total', 'comprobante_id', 'proveedore_id'];
 
+    protected $dates = ['deleted_at'];
+    
     public function proveedore()
     {
         return $this->belongsTo(Proveedore::class);

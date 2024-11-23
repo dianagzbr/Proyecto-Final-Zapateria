@@ -87,7 +87,9 @@
                         <td>
                             <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                                 <a href="{{ route('compras.show', $item->id) }}" class="btn btn-info">Ver</a>
-                                <button type="button" class="btn btn-danger">Eliminar</button>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal-{{$item->id}}">
+                                    Eliminar
+                                </button>
                             </div>
                         </td>
 

@@ -20,7 +20,9 @@ class CompraController extends Controller
      */
     public function index()
     {
-        $compras = Compra::with('comprobante', 'proveedore.persona')->latest()
+        $compras = Compra::with('comprobante', 'proveedore.persona')
+        ->whereNull('deleted_at')
+        ->latest()
         ->get();
         return view('compra.index', compact('compras'));
     }
@@ -130,8 +132,41 @@ class CompraController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Compra $compra)
     {
-        //
+        try {
+            $compra->delete(); 
+            return redirect()->route('compras.index')->with('success', 'Compra eliminada exitosamente.');
+        } catch (Exception $e) {
+            //Log::error('Error al eliminar la compra: ' . $e->getMessage());
+            return redirect()->route('compras.index')->with('error', 'No se pudo eliminar la compra.');
+        }
+    }
+
+    public function restore($id)
+    {
+        try {
+            $compra = Compra::withTrashed()->findOrFail($id);
+            $compra->restore(); 
+            return redirect()->route('compras.index')->with('success', 'Compra restaurada exitosamente.');
+        } catch (Exception $e) {
+            Log::error('Error al restaurar la compra: ' . $e->getMessage());
+            return redirect()->route('compras.index')->with('error', 'No se pudo restaurar la compra.');
+        }
+    }
+
+    /**
+     * Permanently delete a compra.
+     */
+    public function forceDelete($id)
+    {
+        try {
+            $compra = Compra::withTrashed()->findOrFail($id);
+            $compra->forceDelete();
+            return redirect()->route('compras.index')->with('success', 'Compra eliminada permanentemente.');
+        } catch (Exception $e) {
+            Log::error('Error al eliminar permanentemente la compra: ' . $e->getMessage());
+            return redirect()->route('compras.index')->with('error', 'No se pudo eliminar permanentemente la compra.');
+        }
     }
 }
