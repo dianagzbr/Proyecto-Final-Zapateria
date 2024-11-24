@@ -6,6 +6,7 @@ use App\Models\Marca;
 use App\Models\Categoria;
 use App\Models\Producto;
 use App\Models\Talla;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -26,6 +27,8 @@ class ProductoController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Producto::class);
+
         //Join para hacer una union entre tablas marcas y categorias con caracteristicas 
         //y traer a las marcas y categorías "activas"    
         //Select para solo traer solo los id's y nombres
@@ -100,6 +103,8 @@ class ProductoController extends Controller
      */
     public function edit(Producto $producto)
     {
+        $this->authorize('update', Producto::class);
+
         $marcas = Marca::join('caracteristicas as c', 'marcas.caracteristica_id', '=', 'c.id')
             ->select('marcas.id as id', 'c.nombre as nombre')
             ->where('c.estado', 1)->get();
@@ -107,7 +112,7 @@ class ProductoController extends Controller
         $categorias = Categoria::join('caracteristicas as c', 'categorias.caracteristica_id', '=', 'c.id')
             ->select('categorias.id as id', 'c.nombre as nombre')
             ->where('c.estado', 1)->get();
-        
+
         $tallas = Talla::all();
 
         return view('producto.edit', compact('producto', 'marcas', 'categorias', 'tallas'));
@@ -129,18 +134,18 @@ class ProductoController extends Controller
             'tallas.*.id' => 'exists:tallas,id',
             'tallas.*.cantidad' => 'nullable|integer|min:0',
         ]);
-    
+
         // Obtener los datos validados
         $data = $request->all();
         $data['categoria_id'] = $request->categoria_id;
-    
+
         // Procesar la imagen si se subió una nueva
         if ($request->hasFile('img_path')) {
             $file = $request->file('img_path');
             $fileName = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('img/productos'), $fileName);
             $data['img_path'] = 'img/productos/' . $fileName;
-    
+
             // Eliminar la imagen anterior si existe
             if ($producto->img_path && file_exists(public_path($producto->img_path))) {
                 unlink(public_path($producto->img_path));
@@ -149,10 +154,10 @@ class ProductoController extends Controller
             // Si no se sube una nueva imagen, mantener la actual
             unset($data['img_path']);
         }
-    
+
         // Actualizar el producto
         $producto->update($data);
-    
+
         // Actualizar las tallas asociadas
         if ($request->has('tallas')) {
             $tallas = [];
@@ -163,9 +168,8 @@ class ProductoController extends Controller
         } else {
             $producto->tallas()->detach(); // Si no se seleccionan tallas, eliminar todas las relaciones
         }
-    
+
         return redirect()->route('productos.index')->with('success', 'Producto actualizado exitosamente.');
-    
     }
 
     /**
@@ -173,6 +177,8 @@ class ProductoController extends Controller
      */
     public function destroy(string $id)
     {
+        $this->authorize('delete', Producto::class);
+
         $message = '';
         $producto = Producto::find($id);
         if ($producto->estado == 1) {

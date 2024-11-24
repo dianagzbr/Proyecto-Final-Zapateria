@@ -32,6 +32,8 @@ class CompraController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Compra::class);
+
         $proveedores = Proveedore::all();
         $comprobantes = Comprobante::all();
         $productos = Producto::where('estado', 1)->get();
@@ -134,6 +136,8 @@ class CompraController extends Controller
      */
     public function destroy(Compra $compra)
     {
+        $this->authorize('delete', Compra::class);
+
         try {
             $compra->delete(); 
             return redirect()->route('compras.index')->with('success', 'Compra eliminada exitosamente.');

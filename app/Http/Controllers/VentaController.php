@@ -34,6 +34,8 @@ class VentaController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Venta::class);
+
         //traer la tabla compra-producto y seleccionar el producto_id filtrando por el valor maximo, es decir el mas reciente 
         $subquery = DB::table('compra_producto')
             ->select('producto_id', DB::raw('MAX(created_at) as max_created_at'))
@@ -145,6 +147,8 @@ class VentaController extends Controller
      */
     public function destroy(Venta $venta)
     {
+        $this->authorize('delete', Venta::class);
+        
         try {
             $venta->delete();
             return redirect()->route('ventas.index')->with('success', 'Venta eliminada exitosamente.');
