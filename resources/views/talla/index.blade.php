@@ -13,30 +13,7 @@
 
 @section('content')
 
-@if(session('success'))
-<script>
-    let message = "{{ session('success') }}";
-
-    if (message) {
-        const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 1500,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
-            }
-        });
-
-        Toast.fire({
-            icon: "success",
-            title: message
-        });
-    }
-</script>
-@endif
+@include('partials.alert')
 
 <div class="container-fluid px-4">
     <h1 class="mt-4">Tallas</h1>
