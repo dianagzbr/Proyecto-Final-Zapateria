@@ -6,13 +6,15 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CompraController;
 use App\Http\Controllers\MarcaController;
+use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProveedoreController;
 use App\Http\Controllers\TallaController;
 use App\Http\Controllers\VentaController;
+use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
 Route::get('/', function () {
-    return view('template');
+    return view('vista');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -27,8 +29,10 @@ Route::middleware(['auth'])->group(function () {
         'proveedores' => ProveedoreController::class,
         'compras' => CompraController::class,
         'ventas' => VentaController::class,
+        'perfil' => PerfilController::class,
     ]);
 });
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
 Route::get('/401', function () {
     return view('pages.401');

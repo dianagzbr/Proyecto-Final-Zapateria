@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use App\Models\Documento;
 use App\Models\Persona;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class ClienteController extends Controller
