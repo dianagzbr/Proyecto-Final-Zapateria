@@ -136,7 +136,7 @@ class CompraController extends Controller
      */
     public function destroy(Compra $compra)
     {
-        $this->authorize('delete', Compra::class);
+        $this->authorize('delete', $compra);
 
         try {
             $compra->delete(); 

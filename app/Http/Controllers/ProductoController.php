@@ -103,7 +103,7 @@ class ProductoController extends Controller
      */
     public function edit(Producto $producto)
     {
-        $this->authorize('update', Producto::class);
+        $this->authorize('update', $producto);
 
         $marcas = Marca::join('caracteristicas as c', 'marcas.caracteristica_id', '=', 'c.id')
             ->select('marcas.id as id', 'c.nombre as nombre')
@@ -177,7 +177,9 @@ class ProductoController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->authorize('delete', Producto::class);
+        $producto = Producto::findOrFail($id);
+
+        $this->authorize('delete', $producto);
 
         $message = '';
         $producto = Producto::find($id);

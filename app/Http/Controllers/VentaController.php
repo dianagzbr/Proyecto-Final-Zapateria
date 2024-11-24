@@ -157,7 +157,7 @@ class VentaController extends Controller
      */
     public function destroy(Venta $venta)
     {
-        $this->authorize('delete', Venta::class);
+        $this->authorize('delete', $venta);
 
         try {
             $venta->delete();
