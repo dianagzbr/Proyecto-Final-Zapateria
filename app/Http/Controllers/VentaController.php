@@ -75,25 +75,40 @@ class VentaController extends Controller
     {
         try {
             DB::beginTransaction();
-
-            $fechaHora = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now()->toDateTimeString());
-
+            Log::info('Iniciando el proceso de creación de una nueva venta.');
+    
+            // Fecha y hora actual
+            $fechaHora = Carbon::now();
+            Log::info('Fecha y hora de la venta registrada:', ['fecha_hora' => $fechaHora->toDateTimeString()]);
+    
+            // Validación de datos
             $ventaData = $request->validated();
             $ventaData['fecha_hora'] = $fechaHora;
-
-            //Crear la venta
+    
+            Log::info('Datos validados para la venta:', $ventaData);
+    
+            // Crear la venta
             $venta = Venta::create($ventaData);
-
-            //Manejo de productos
+            Log::info('Venta creada exitosamente:', $venta->toArray());
+    
+            // Manejo de productos
             $arrayProducto_id = $request->get('arrayidproducto');
             $arrayCantidad = $request->get('arraycantidad');
             $arrayPrecioVenta = $request->get('arrayprecioventa');
             $arrayDescuento = $request->get('arraydescuento');
-
+    
+            Log::info('Arrays recibidos para productos:', [
+                'Productos' => $arrayProducto_id,
+                'Cantidades' => $arrayCantidad,
+                'Precios de venta' => $arrayPrecioVenta,
+                'Descuentos' => $arrayDescuento
+            ]);
+    
             $sizeArray = count($arrayProducto_id);
+    
             for ($cont = 0; $cont < $sizeArray; $cont++) {
-                //Log::info("Procesando producto ID: {$arrayProducto_id[$cont]}");
-
+                Log::info("Procesando producto ID: {$arrayProducto_id[$cont]}");
+    
                 $venta->productos()->syncWithoutDetaching([
                     $arrayProducto_id[$cont] => [
                         'cantidad' => $arrayCantidad[$cont],
@@ -101,29 +116,38 @@ class VentaController extends Controller
                         'descuento' => $arrayDescuento[$cont],
                     ]
                 ]);
-
-                //Actualizar stock
+    
+                Log::info('Producto sincronizado con la venta:', [
+                    'producto_id' => $arrayProducto_id[$cont],
+                    'cantidad' => $arrayCantidad[$cont],
+                    'precio_venta' => $arrayPrecioVenta[$cont],
+                    'descuento' => $arrayDescuento[$cont]
+                ]);
+    
+                // Actualizar stock
                 $producto = Producto::find($arrayProducto_id[$cont]);
                 if (!$producto) {
                     throw new Exception("Producto no encontrado: ID {$arrayProducto_id[$cont]}");
                 }
-
+    
                 $producto->decrement('stock', $arrayCantidad[$cont]);
+                Log::info("Stock actualizado para el producto ID {$producto->id}: Nuevo stock: {$producto->stock}");
             }
-
+    
             DB::commit();
-
-            /// Enviar correo a los administradores
+            Log::info('Transacción completada exitosamente.');
+    
+            // Enviar correo a los administradores
             $adminEmails = User::where('role', 'admin')->pluck('email');
-            Log::info('Enviando correo a los administradores: ', $adminEmails->toArray());
-
+            Log::info('Enviando correo a los administradores:', $adminEmails->toArray());
+    
             Mail::to($adminEmails)->send(new VentaRealizada($venta));
             Log::info('Correo enviado exitosamente.');
-
+    
             return redirect()->route('ventas.index')->with('success', 'Venta registrada exitosamente.');
         } catch (Exception $e) {
             DB::rollBack();
-
+            Log::error('Error al registrar la venta: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return redirect()->route('ventas.create')->with('error', 'Ocurrió un error al registrar la venta.');
         }
     }
