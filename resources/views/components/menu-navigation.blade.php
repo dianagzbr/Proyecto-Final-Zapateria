@@ -97,10 +97,6 @@
                         <a class="nav-link" href="{{ route('ventas.create') }}">Crear</a>
                     </nav>
                 </div>
-                <a class="nav-link" href="tables.html">
-                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                    Tables
-                </a>
             </div>
         </div>
         <div class="sb-sidenav-footer">

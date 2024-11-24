@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreVentaRequest;
+use App\Mail\VentaRealizada;
 use App\Models\Cliente;
 use App\Models\Comprobante;
 use App\Models\Producto;
+use App\Models\User;
 use App\Models\Venta;
 use Carbon\Carbon;
 use Exception;
@@ -13,6 +15,7 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class VentaController extends Controller
 {
@@ -110,6 +113,13 @@ class VentaController extends Controller
 
             DB::commit();
 
+            /// Enviar correo a los administradores
+            $adminEmails = User::where('role', 'admin')->pluck('email');
+            Log::info('Enviando correo a los administradores: ', $adminEmails->toArray());
+
+            Mail::to($adminEmails)->send(new VentaRealizada($venta));
+            Log::info('Correo enviado exitosamente.');
+
             return redirect()->route('ventas.index')->with('success', 'Venta registrada exitosamente.');
         } catch (Exception $e) {
             DB::rollBack();
@@ -148,7 +158,7 @@ class VentaController extends Controller
     public function destroy(Venta $venta)
     {
         $this->authorize('delete', Venta::class);
-        
+
         try {
             $venta->delete();
             return redirect()->route('ventas.index')->with('success', 'Venta eliminada exitosamente.');
