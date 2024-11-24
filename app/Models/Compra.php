@@ -29,4 +29,9 @@ class Compra extends Model
     {
         return $this->belongsToMany(Producto::class)->withTimestamps()->withPivot('cantidad','precio_compra','precio_venta');
     }
+
+    public function archivos()
+    {
+        return $this->morphMany(Archivo::class, 'archivable');
+    }
 }

@@ -23,10 +23,10 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        // $this->call(DocumentoSeeder::class);
-        // $this->call(ComprobanteSeeder::class);
+        $this->call(DocumentoSeeder::class);
+        $this->call(ComprobanteSeeder::class);
 
-        Cliente::factory()->count(20)->create(); // 20 clientes
-        Proveedore::factory()->count(10)->create(); // 10 proveedores
+        // Cliente::factory()->count(20)->create(); // 20 clientes
+        // Proveedore::factory()->count(10)->create(); // 10 proveedores
     }
 }

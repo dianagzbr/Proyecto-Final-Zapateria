@@ -195,8 +195,30 @@
                 </tfoot>
             </table>
         </div>
-    </div>
+        <div class="card-body">
+            <p><strong>Subir archivos:</strong></p>
+            <form action="{{ route('archivos.store', ['modelType' => 'compra', 'modelId' => $compra->id]) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="file" name="archivos[]" multiple>
+                <button type="submit" class="btn" style="background-color:#db2373; color:white">Subir</button>
+            </form>
 
+            <p><strong class="mt-4">Archivos adjuntos:</strong></p>
+            <ul>
+                @foreach ($compra->archivos as $archivo)
+                <li class="mb-2">
+                    {{ $archivo->nombre }}
+                    <a href="{{ route('archivos.download', $archivo->id) }}" class="btn btn-success btn-sm">Descargar</a>
+                    <form action="{{ route('archivos.destroy', $archivo->id) }}" method="POST" style="display:inline-block;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                    </form>
+                </li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
 </div>
 @endsection
 

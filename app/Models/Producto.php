@@ -35,4 +35,9 @@ class Producto extends Model
     {
         return $this->belongsToMany(Talla::class, 'producto_talla')->withPivot('cantidad')->withTimestamps();
     }
+
+    public function archivos()
+    {
+        return $this->morphMany(Archivo::class, 'archivable');
+    }
 }

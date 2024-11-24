@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArchivoController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoriaController;
@@ -33,6 +34,10 @@ Route::middleware(['auth'])->group(function () {
     ]);
 });
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+Route::post('/archivos/{modelType}/{modelId}', [ArchivoController::class, 'store'])->name('archivos.store');
+Route::delete('/archivos/{archivo}', [ArchivoController::class, 'destroy'])->name('archivos.destroy');
+Route::get('/archivos/{archivo}/download', [ArchivoController::class, 'download'])->name('archivos.download');
 
 Route::get('/401', function () {
     return view('pages.401');
